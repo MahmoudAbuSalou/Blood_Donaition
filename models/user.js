@@ -53,12 +53,13 @@ const User = sequelize.define('user', {
 	updatedAt: Sequelize.DATE,
 })
 
-//  // Create token
-// User.methods.generateAuthToken = function() { 
+ // Create token
+var generateToken= function() { 
     
-//   const token = jwt.sign({ _id: this.user_id, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
-//   return token;
-// }
+    const token = jwt.sign({ _id: User.user_id, isAdmin: User.isAdmin }, config.get('jwtPrivateKey'));
+    return token;
+  }
+
 
 //validate user
 function validateUser(user) {
@@ -67,9 +68,9 @@ function validateUser(user) {
     email   : Joi.string().required().min(5).max(255).email(),
     password: Joi.string().min(5).max(255).required(),
     address: Joi.string().min(5).max(255).required(),
-    phone: Joi.number().min(10).max(10).required(),
+    phone: Joi.number().min(10).required(),
 
-    isAdmin :Joi.boolean(),
+    isAdmin :Joi.boolean().required(),
 });
 return schema.validate(user);
 }
@@ -83,5 +84,6 @@ User.hasOne(userProfile.UserProfile, {
 // 'user' table.
 exports.User = User; 
 exports.validate = validateUser;
+exports.genToken = generateToken;
 
 

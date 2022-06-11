@@ -2,10 +2,10 @@ const express = require('express');
 const app = express();
 
 
-//require('./startup/routes')(app);
+require('./startup/routes')(app);
 const sequelize=require('./startup/db');
 require('./startup/config')();
-require('./models/user')
+
 require('./models/health_user_profile')
 
 

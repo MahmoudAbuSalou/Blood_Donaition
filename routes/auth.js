@@ -1,32 +1,42 @@
-// const Joi = require('joi');
-// const bcrypt = require('bcrypt');
-// const _ = require('lodash');
-// const {User} = require('../models/user');
+const Joi = require('joi');
+const bcrypt = require('bcrypt');
+const  asyncMiddleWare     = require('../middleware/async');
+const _ = require('lodash');
+const User = require('../models/user');
 
-// const express = require('express');
-// const router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-// router.post('/', async (req, res) => {
-//   const { error } = validate(req.body); 
-//   if (error) return res.status(400).send(error.details[0].message);
+router.post('/',asyncMiddleWare( async (req, res) => {
 
-//   let user = await User.findOne({ email: req.body.email });
-//   if (!user) return res.status(400).send('Invalid email or password.');
+  //Validate Response
+  const { error } = validateAuth(req.body); 
+  if (error) return res.status(400).send(error.details[0].message);
 
-//   const validPassword = await bcrypt.compare(req.body.password, user.password);
-//   if (!validPassword) return res.status(400).send('Invalid email or password.');
+  //Check If User is found
+  let user = await User.User.findOne({ where:{email: req.body.email} });
+  if (!user) return res.status(400).send('This User Isn\'t Found');
 
-//   const token = user.generateAuthToken();
-//   res.send(token);
-// });
 
-// function validate(req) {
-//   const schema = {
-//     email: Joi.string().min(5).max(255).required().email(),
-//     password: Joi.string().min(5).max(255).required()
-//   };
+  //Compare Between Req.password And User.password in DB
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword) return res.status(400).send('Invalid password.');
 
-//   return Joi.validate(req, schema);
-// }
+  //If All Things Is GenToken And Send It 
+  const token = User.genToken(); 
+  res.send(token);
+}));
 
-// module.exports = router; 
+function validateAuth(req) {
+
+  const schema = Joi.object({
+        email   : Joi.string().required().min(5).max(255).email(),
+    password: Joi.string().min(5).max(255).required(),
+ 
+
+    isAdmin :Joi.boolean().required(),
+});
+return schema.validate(req);
+
+}
+module.exports = router; 
