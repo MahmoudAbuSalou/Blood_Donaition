@@ -53,26 +53,65 @@ const User = sequelize.define('user', {
 	updatedAt: Sequelize.DATE,
 })
 
+
  // Create token
-var generateToken= function() { 
-    
-    const token = jwt.sign({ _id: User.user_id, isAdmin: User.isAdmin }, config.get('jwtPrivateKey'));
+   var generateToken=  function(userID,role) { 
+ 
+  let payload={
+  
+    "id":userID,
+    "isAdmin": role
+  }
+ 
+  
+    const token =  jwt.sign(payload, config.get('jwtPrivateKey'));
+   
     return token;
   }
 
 
 //validate user
-function validateUser(user) {
-  const schema = Joi.object({
-    name    : Joi.string().min(3).max(50).required(),
-    email   : Joi.string().required().min(5).max(255).email(),
-    password: Joi.string().min(5).max(255).required(),
-    address: Joi.string().min(5).max(255).required(),
-    phone: Joi.number().min(10).required(),
-
-    isAdmin :Joi.boolean().required(),
-});
-return schema.validate(user);
+function validateUser(user,type) {
+  var schema;
+  switch (type){
+    case 'signUp': {
+      console.log('Validation SignUp')
+      schema=  Joi.object({
+        name    : Joi.string().min(3).max(50).required(),
+        email   : Joi.string().required().min(5).max(255).email(),
+        password: Joi.string().min(5).max(255).required(),
+        address: Joi.string().min(5).max(255).required(),
+        phone: Joi.number().min(10).required(),
+    
+        isAdmin :Joi.boolean().required(),
+      })
+      return schema.validate(user);
+  }
+  case 'login': {
+    console.log('Validation Login')
+      schema= Joi.object({
+        email   : Joi.string().required().min(5).max(255).email(),
+        password: Joi.string().min(5).max(255).required(),
+        isAdmin :Joi.boolean().required(),
+      })
+      return schema.validate(user);
+  }
+  case 'chgPassword':{
+    console.log('chgPassword')
+    schema= Joi.object({
+     
+      password: Joi.string().min(5).max(255).required(),
+   
+    })
+    return schema.validate(user);
+  }
+  default: {
+     console.log('Error Validation')
+  }
+ 
+  }
+  
+  
 }
 User.hasOne(userProfile.UserProfile, {
   foreignKey: "user_id",

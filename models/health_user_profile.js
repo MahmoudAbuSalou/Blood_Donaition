@@ -45,7 +45,7 @@ const User = sequelize.define('userHealthProfile', {
 	
       
       blood_type: { type: Sequelize.STRING, allowNull:false },
-      donation_count: { type: Sequelize.INTEGER, allowNull:false },
+      donation_count: { type: Sequelize.INTEGER, allowNull:true },
       dateOfLastDonation:{ type: Sequelize.DATE,allowNull:true },
   
    
@@ -63,8 +63,7 @@ function validateUser(user) {
      weight    : Joi.number().min(2).max(50).required(),
      gender    : Joi.string().min(3).max(50).required(),
      blood_type    : Joi.string().min(2).max(50).required(),
-     donation_count    : Joi.number().min(1).max(50).required(),
-     dateOfLastDonation   :  Joi.date().raw().required(),
+    
    
 });
 return schema.validate(user);
@@ -76,5 +75,5 @@ return schema.validate(user);
 // we can perform CRUD operations on
 // 'user' table.
 exports.UserProfile = User; 
-exports.validate = validateUser;
+exports.validateUserProfile = validateUser;
 

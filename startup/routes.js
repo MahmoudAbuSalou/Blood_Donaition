@@ -1,9 +1,10 @@
 const express = require('express');
 
-const customers = require('../routes/customers');
+
 
 const users = require('../routes/users');
-const auth = require('../routes/auth');
+const donaite = require('../routes/donaite');
+const genPin=require('../routes/generatePin')
 const error = require('../middleware/error');
 
 module.exports = function(app) {
@@ -12,6 +13,8 @@ module.exports = function(app) {
   //app.use('/api/customers', customers);
   
   app.use('/api/users', users);
-  app.use('/api/auth', auth);
+  app.use('/api/donaite',donaite)
+  app.use('/api/genPin',genPin)
+ 
   app.use(error);
 }
