@@ -7,6 +7,8 @@ const Joi = require('joi');
 const Sequelize = require('sequelize')
 const userProfile=require('./health_user_profile')
 
+const {Post}=require('./post');
+const {BloodDonors}=require('./blood_donors');
 // Import sequelize object,
 // Database connection pool managed by Sequelize.
 const sequelize = require('../startup/db.js')
@@ -117,6 +119,29 @@ User.hasOne(userProfile.UserProfile, {
   foreignKey: "user_id",
   sourceKey: "user_id",
 });
+// one to one between user and user profile
+User.hasOne(userProfile.UserProfile, {
+  foreignKey: "user_id",
+  sourceKey: "user_id",
+});
+// , field : "user_id",
+// one to many between post and user  
+User.hasMany(Post, {
+  foreignKey: 'user_id'
+ 
+});
+ Post.belongsTo(User,{
+  foreignKey: 'user_id',
+ });
+
+// one to many between BloodDonors and user  
+User.hasMany(BloodDonors, {
+  foreignKey: 'user_id',
+  
+});
+ BloodDonors.belongsTo(User,{
+  foreignKey: 'user_id',
+ });
 
 // Exporting User, using this constant
 // we can perform CRUD operations on

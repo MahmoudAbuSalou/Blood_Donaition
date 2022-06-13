@@ -129,7 +129,8 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
       message : 'all Thing is Right',
       user : user,
       userprofile:userProfile,
-      pin:pin
+      token:token
+  
     }
 
 
