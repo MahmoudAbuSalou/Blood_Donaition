@@ -30,7 +30,10 @@ module.exports = async (req, res, next) => {
        
        checkFile('./BlackList.txt')
            fs.readFile('./BlackList.txt', function (err, data) {
-            if (err) throw err;
+            if (err) {
+                console.log('blackList')
+                throw err;
+            }
             if(data.includes(token)){
              isBlackListed=true;
             }
