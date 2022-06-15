@@ -9,16 +9,16 @@ const router = express.Router();
 
 
 router.get('/:page',asyncMiddleWare(async (req, res) => {
-
-    let limit = 10
-    let offset = 0 + (req.params.page - 1) * limit
+req
+    let limit = 10 // Number OF Post that Return in Every Request 
+    let offset = 0 + (req.params.page - 1) * limit // Get last Index that Get in previous Request  
   
     const response =await Post.findAll({
         offset: offset,
         limit: limit,
-        include: User ,
+        include: User ,// Join Table Post With Table User
         order: [
-            ['createdAt', 'DESC']
+            ['createdAt', 'DESC'] //  order By Date  To Get The Latest Post
         ]
     });
 

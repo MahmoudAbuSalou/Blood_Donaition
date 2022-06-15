@@ -1,4 +1,4 @@
-
+const  _ = require('lodash');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
@@ -9,6 +9,7 @@ const userProfile=require('./health_user_profile')
 
 const {Post}=require('./post');
 const {BloodDonors}=require('./blood_donors');
+const {UserProfile}=require('./health_user_profile');
 // Import sequelize object,
 // Database connection pool managed by Sequelize.
 const sequelize = require('../startup/db.js')
@@ -16,7 +17,8 @@ const sequelize = require('../startup/db.js')
 // Define method takes two arguments
 // 1st - name of table
 // 2nd - columns inside the table
-const User = sequelize.define('user', {
+const User = sequelize.define('user', 
+{
 
 	// Column-1, user_id is an object with
 	// properties like type, keys,
@@ -53,7 +55,17 @@ const User = sequelize.define('user', {
 	// Timestamps
 	createdAt: Sequelize.DATE,
 	updatedAt: Sequelize.DATE,
-})
+},
+{
+  hooks: {
+    beforeCreate() {
+      // Do other stuff
+    }
+  }
+}
+
+
+)
 
 
  // Create token
@@ -78,6 +90,7 @@ function validateUser(user,type) {
   switch (type){
     case 'signUp': {
       console.log('Validation SignUp')
+     
       schema=  Joi.object({
         name    : Joi.string().min(3).max(50).required(),
         email   : Joi.string().required().min(5).max(255).email(),
@@ -86,6 +99,9 @@ function validateUser(user,type) {
         phone: Joi.number().min(10).required(),
     
         isAdmin :Joi.boolean().required(),
+        blood_type    : Joi.string().min(2).max(4).required(),
+        gender   : Joi.string().required().min(4).max(255),
+        weight: Joi.number().min(2).required(),
       })
       return schema.validate(user);
   }
@@ -107,6 +123,20 @@ function validateUser(user,type) {
     })
     return schema.validate(user);
   }
+  case 'updateProfile':{
+    schema=  Joi.object({
+      name    : Joi.string().min(3).max(50).required(),
+      email   : Joi.string().required().min(5).max(255).email(),
+      address: Joi.string().min(5).max(255).required(),
+      phone: Joi.number().min(10).required(),
+      weight: { type: Sequelize.INTEGER, allowNull:false},
+      gender: { type: Sequelize.STRING, allowNull:false },
+    
+          blood_type: { type: Sequelize.STRING, allowNull:false },
+  
+    })
+    return schema.validate(user);
+  }
   default: {
      console.log('Error Validation')
   }
@@ -115,15 +145,16 @@ function validateUser(user,type) {
   
   
 }
-User.hasOne(userProfile.UserProfile, {
-  foreignKey: "user_id",
-  sourceKey: "user_id",
-});
+
 // one to one between user and user profile
 User.hasOne(userProfile.UserProfile, {
   foreignKey: "user_id",
   sourceKey: "user_id",
 });
+
+UserProfile.belongsTo(User,{
+  foreignKey: 'user_id',
+ });
 // , field : "user_id",
 // one to many between post and user  
 User.hasMany(Post, {
@@ -133,7 +164,7 @@ User.hasMany(Post, {
  Post.belongsTo(User,{
   foreignKey: 'user_id',
  });
-
+//-------------------------------------------------------------
 // one to many between BloodDonors and user  
 User.hasMany(BloodDonors, {
   foreignKey: 'user_id',
@@ -142,7 +173,7 @@ User.hasMany(BloodDonors, {
  BloodDonors.belongsTo(User,{
   foreignKey: 'user_id',
  });
-
+//---------------------------------------------------------------
 // Exporting User, using this constant
 // we can perform CRUD operations on
 // 'user' table.

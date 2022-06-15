@@ -6,13 +6,15 @@ const fs = require('fs');
 //to Catch Errors
 const  asyncMiddleWare     = require('../middleware/async');
 
-
+//const { sequelize } = require("../startup/db"); 
 //load Model "USER"
 const {User, validate,genToken} = require('../models/user');
-
-const { UserProfile, validateUserProfile} = require('../models/health_user_profile');
+//Load Model "HealthUserProfile"
+const { UserProfile} = require('../models/health_user_profile');
+const {Post}=require('../models/post')
 
 const express = require('express');
+const { floor } = require('lodash');
 const router = express.Router();
 
 
@@ -46,11 +48,11 @@ router.get('/', auth, asyncMiddleWare(
 
 
 //Logout And Store Token in BlackList (File) 
-router.get('/logout', auth, asyncMiddleWare(
+router.get('/logout',auth,asyncMiddleWare(
   async (req, res) => {
     let token = req.headers.authorization;
    
-    fs.appendFile('../BlackList.txt', token, function (err) {
+    fs.appendFile('../middleware/BlackList.txt', token, function (err) {
       if (err) throw err;
       console.log('Saved!');
     });
@@ -68,19 +70,19 @@ router.get('/logout', auth, asyncMiddleWare(
 router.post('/signUp',asyncMiddleWare( async (req, res) => {
 
 
-
-  var reqUser=_.pick(req.body, ['name', 'email', 'password', 'isAdmin','address','phone'])
-  var reqUserHealthProfile= _.pick(req.body, ['weight', 'gender', 'blood_type'])
+    
+ 
+  
  
   //Check if request isn't validate
-  const { error } = validate(reqUser,'signUp'); 
-  const { error2 } = validateUserProfile(reqUserHealthProfile); 
-  if (error || error2) return res.status(400).send({error:error.details[0].message});
+  const { error } = validate(req.body,'signUp'); 
+  if (error ) return res.status(400).send({error:error.details[0].message});
+
 
  
     // check if user already exist
     // Validate if user exist in our database
-  let user = await User.findOne({ where:{email: reqUser.email} });
+  let user = await User.findOne({ where:{email: req.body.email} });
   if (user) return res.status(400).send({error:'User already registered.'});
 
 
@@ -89,26 +91,36 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
   var password = await bcrypt.hash(req.body.password, salt);
 
 
-  // save user in our database and store it in UserRes
+  const sequelize=require('../startup/db')
+   let transaction;
+     
+
+   try {
+  
+    
+    // get transaction
+    transaction = await sequelize.transaction();
+      // save user in our database and store it in UserRes
   const UserRes=await User.create({
-    name: reqUser.name,
-    email:reqUser.email,
+    name: req.body.name,
+    email:req.body.email,
     password:password,
-    phone:reqUser.phone,
-    address:reqUser.address,
-    isAdmin:reqUser.isAdmin,
+    phone:req.body.phone,
+    address:req.body.address,
+    isAdmin:req.body.isAdmin,
+    dateOfLastDonation:new Date()
 
 
   })
  
   
-  reqUserHealthProfile.user_id=UserRes.user_id
+  const user_id=UserRes.user_id
   const UserHealthProfileRes=await UserProfile.create({
-   weight:reqUserHealthProfile.weight,
-   gender:reqUserHealthProfile.gender,
-   blood_type:reqUserHealthProfile.blood_type,
-   donation_count:0,
-   user_id:reqUserHealthProfile.user_id,
+   weight:req.body.weight,
+   gender:req.body.gender,
+   blood_type:req.body.blood_type,
+   donation_count:req.body.donation_count,
+   user_id:user_id,
 
   })
   
@@ -116,25 +128,37 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
     //Gen Token
     
     const token=genToken(UserRes.user_id,UserRes.isAdmin);
+      //Init Obj to send it AS Response
+      user = _.pick(UserRes, ['user_id','phone','address','name', 'email', 'isAdmin','token']);
+      const user_Profile = _.pick(UserHealthProfileRes, ['weight','gender','blood_type','donation_count']);
   
+  // commit
+  await transaction.commit();
+       const Obj={
+        status : 'true',
+        message : 'all Thing is Right',
+        user : user,
+        userprofile:user_Profile,
+        token:token
+    
+      }
+  
+  
+       res.status(200).send(Obj);
      
+    
+     
+    
+   
+   } catch (error) {
+     // Rollback transaction only if the transaction object is defined
+     console.log("errorSignUser")
+     if (transaction) await transaction.rollback();
+   }
 
-    //Init Obj to send it AS Response
-     user = _.pick(UserRes, ['user_id','phone','address','name', 'email', 'isAdmin','token']);
-    const userProfile = _.pick(UserHealthProfileRes, ['weight','gender','blood_type']);
-
-
-     const Obj={
-      status : 'true',
-      message : 'all Thing is Right',
-      user : user,
-      userprofile:userProfile,
-      token:token
-  
-    }
+ 
 
 
-     res.status(200).send(Obj);
   
  
    
@@ -211,5 +235,148 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
   });
 }));
 
+router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
 
+  const error=validate(req.body,'updateProfile')
+  if (error) return res.status(400).send(error.details[0].message);
+  let userProfile=await UserProfile.findOne({where:{user_id:req.user.user_id}});
+  let user=await User.findOne({where:{user_id:req.user.user_id}});
+  if(!userProfile || !user) res.status(400).send({
+   'status':"false",
+   'message':"This User isn't found",
+    
+  });
+  
+  
+ 
+  let result=userProfile.update({
+    weight:req.body.weight,
+    blood_type:req.body.blood_type,
+    gender:req.body.gender
+  })
+   let result2=user.update({
+    name:req.body.name,
+    address:req.body.address,
+    email:req.body,email,
+    phone:req.body.phone,
+    
+
+  })
+  
+  var data={
+    "status":"true",
+    "message":"Profile is Updated successfuly "
+  }
+  res.status(200).send(data)
+
+ 
+ }));
+
+//getUserProfile
+router.get('/listUser', auth, asyncMiddleWare(
+  async (req, res) => {
+      
+
+  
+    let Result = await UserProfile.findAll ({
+      attributes: ['donation_count'],
+      limit: 10,
+      include:[
+        {
+          model:User
+        }
+      ],
+      order: [
+        
+          ['donation_count', 'DESC']
+      ],
+
+    });
+    var max=Result[Result.length-1].dataValues.donation_count
+    var min=Result[0].dataValues.donation_count
+    
+    var avg=(min +max)/5
+  
+    
+
+
+    Result.forEach(element => {
+
+     
+      var temp=((element.dataValues.donation_count * 3)/(5))
+      
+      element.dataValues.rating=temp;
+     
+      
+    });
+   
+   
+   //  console.log(Result[0].dataValues)
+   
+    const response={
+      message:"All Thing Is right",
+      status:"true",
+      data:Result,
+      
+    }
+    res.status(200).send(response);
+  }));
+
+
+  //DeleteUser
+  router.get('/deleteUser',auth,asyncMiddleWare(async (req,res)=>{
+  
+    
+    
+  //Don't Use it Global in Transaction that throw Exception 
+  //Bug in Transaction 
+    const sequelize=require('../startup/db')
+   let transaction;
+     
+
+   try {
+    let user=await User.findOne({
+      where: {user_id: req.user.id},
+    })
+    let userProfile=await UserProfile.findOne({
+      where: {user_id: req.user.id},
+    })
+  
+    
+    // get transaction
+    transaction = await sequelize.transaction();
+     await User.destroy({
+     where:{ user_id: user.user_id},transaction });
+     
+    
+     await UserProfile.destroy({
+      where: {
+        profile_id: userProfile.profile_id
+      }
+      ,transaction});
+      await Post.destroy({
+        where: {
+          user_id: user.user_id
+        }
+        ,transaction});
+    // commit
+    await transaction.commit();
+     res.send({
+      status:'true',
+      data:user
+     })
+    
+   
+   } catch (error) {
+     // Rollback transaction only if the transaction object is defined
+     console.log("errorDeleteUser")
+     if (transaction) await transaction.rollback();
+   }
+    
+    
+   
+    
+
+    
+  } ))
  module.exports = router; 

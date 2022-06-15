@@ -1,13 +1,13 @@
 
 const _ = require('lodash');
-
+const auth = require('../../middleware/auth');
 const  asyncMiddleWare     = require('../../middleware/async');
 const {Post,validate} = require('../../models/post');
 const express = require('express');
 const router = express.Router();
 
 
-router.post('/:id',asyncMiddleWare(async (req, res) => {
+router.post('/:id',auth,asyncMiddleWare(async (req, res) => {
 
    
   
@@ -23,7 +23,7 @@ router.post('/:id',asyncMiddleWare(async (req, res) => {
         phone: req.body.phone,
         expiryDate: req.body.expiryDate,    
     },
-        { where: { post_id:req.params.id,user_id:req.body.user_id}});
+        { where: { post_id:req.params.id,user_id:req.user.id}});
        
     if (response==0) {
         res.status(404).send({
