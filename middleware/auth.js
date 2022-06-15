@@ -25,7 +25,8 @@ module.exports = async (req, res, next) => {
     if (token) {
         try {
       
-            /* ---------------------- Check For Blacklisted Tokens ---------------------- * var isBlackListed=false;
+            /* ---------------------- Check For Blacklisted Tokens ----------------------*/
+            var isBlackListed=false;
        
        checkFile('./BlackList.txt')
            fs.readFile('./BlackList.txt', function (err, data) {
