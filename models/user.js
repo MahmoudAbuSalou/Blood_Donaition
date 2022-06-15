@@ -110,7 +110,7 @@ function validateUser(user,type) {
       schema= Joi.object({
         email   : Joi.string().required().min(5).max(255).email(),
         password: Joi.string().min(5).max(255).required(),
-        isAdmin :Joi.boolean().required(),
+      
       })
       return schema.validate(user);
   }
