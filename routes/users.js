@@ -52,10 +52,10 @@ router.get('/logout',auth,asyncMiddleWare(
   async (req, res) => {
     let token = req.headers.authorization;
    
-    fs.appendFile('../middleware/BlackList.txt', token, function (err) {
-      if (err) throw err;
-      console.log('Saved!');
-    });
+    // fs.appendFile('../middleware/BlackList.txt', token, function (err) {
+    //   if (err) throw err;
+    //   console.log('Saved!');
+    // });
   
     
     res.status(200).send({

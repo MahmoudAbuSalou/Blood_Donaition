@@ -26,25 +26,25 @@ module.exports = async (req, res, next) => {
         try {
       
             /* ---------------------- Check For Blacklisted Tokens ----------------------*/
-            var isBlackListed=false;
+    //         var isBlackListed=false;
        
-       checkFile('./BlackList.txt')
-           fs.readFile('./BlackList.txt', function (err, data) {
-            if (err) {
-                console.log('blackList')
-                throw err;
-            }
-            if(data.includes(token)){
-             isBlackListed=true;
-            }
-          });
+    //    checkFile('./BlackList.txt')
+    //        fs.readFile('./BlackList.txt', function (err, data) {
+    //         if (err) {
+    //             console.log('blackList')
+    //             throw err;
+    //         }
+    //         if(data.includes(token)){
+    //          isBlackListed=true;
+    //         }
+    //       });
           
         
        
            
-                 if (isBlackListed) {
-                  return res.status(401).json({ error: 'Unauthorized' });
-             }
+    //              if (isBlackListed) {
+    //               return res.status(401).json({ error: 'Unauthorized' });
+    //          }
             
 
 
