@@ -19,7 +19,7 @@ const port = process.env.PORT || 3000;
 	
 // Sync all models that are not
 // already in the database
-sequelize.sync({force:true}).then((result) => {
+sequelize.sync({force:false}).then((result) => {
     
     
     app.listen(port, () =>console.log(`Listening on port ${port}...`));
