@@ -14,10 +14,25 @@ const { UserProfile} = require('../models/health_user_profile');
 const {Post}=require('../models/post')
 
 const express = require('express');
-const { floor } = require('lodash');
+const {TokenModel ,encodeToken}=require('../models/blackList')
 const router = express.Router();
 
 
+
+function checkFile(filename) {
+    fs.open(filename,'r',function(err, fd){
+      if (err) {
+        fs.writeFile(filename, 'w', function(err) {
+            if(err) {
+                console.log(err);
+            }
+            console.log("The file was saved!");
+        });
+      } else {
+        console.log("The file exists!");
+      }
+    });
+  }
 
 //getUser+UserProfile
 router.get('/', auth, asyncMiddleWare(
@@ -50,18 +65,17 @@ router.get('/', auth, asyncMiddleWare(
 //Logout And Store Token in BlackList (File) 
 router.get('/logout',auth,asyncMiddleWare(
   async (req, res) => {
-    let token = req.headers.authorization;
-   
-    // fs.appendFile('../middleware/BlackList.txt', token, function (err) {
-    //   if (err) throw err;
-    //   console.log('Saved!');
-    // });
+    let tempToken = req.headers.authorization;
+    tempToken=encodeToken(tempToken)
+    const TokenRes=await TokenModel.create({
+      token: tempToken,
+    })
   
     
     res.status(200).send({
       status:"true",
-      message:"Delete this token is Done",
-      token:token
+      message:"Blocking this token is Done",
+      token:TokenRes
     });
   }
   
@@ -272,7 +286,7 @@ router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
  
  }));
 
-//getUserProfile
+//getUsers
 router.get('/listUser', auth, asyncMiddleWare(
   async (req, res) => {
       

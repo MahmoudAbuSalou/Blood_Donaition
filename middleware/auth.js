@@ -1,21 +1,8 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
-const fs=require('fs')
+const {TokenModel ,encodeToken}=require('../models/blackList')
 
-function checkFile(filename) {
-    fs.open(filename,'r',function(err, fd){
-      if (err) {
-        fs.writeFile(filename, '', function(err) {
-            if(err) {
-                console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-      } else {
-        console.log("The file exists!");
-      }
-    });
-  }
+
 module.exports = async (req, res, next) => {
 
    
@@ -26,25 +13,26 @@ module.exports = async (req, res, next) => {
         try {
       
             /* ---------------------- Check For Blacklisted Tokens ----------------------*/
-    //         var isBlackListed=false;
-       
-    //    checkFile('./BlackList.txt')
-    //        fs.readFile('./BlackList.txt', function (err, data) {
-    //         if (err) {
-    //             console.log('blackList')
-    //             throw err;
-    //         }
-    //         if(data.includes(token)){
-    //          isBlackListed=true;
-    //         }
-    //       });
+         
+             
+             let tempToken = await TokenModel.findAll();
+           
+             tempToken.forEach( element => {
+              var temp1=element.token;
+              
+              var temp2 =  jwt.verify(temp1, config.get('blackListKey'));
+              
+               
+              if(temp2.crypt==token)
+              return res.status(401).json({ error: 'Unauthorized' });
+              
+             });
+              
+  
           
         
        
            
-    //              if (isBlackListed) {
-    //               return res.status(401).json({ error: 'Unauthorized' });
-    //          }
             
 
 

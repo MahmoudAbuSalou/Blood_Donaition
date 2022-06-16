@@ -1,3 +1,4 @@
 {
-  "jwtPrivateKey": "Blood_jwtPrivateKey"
+  "jwtPrivateKey": "Blood_jwtPrivateKey",
+  "blackListKey":"Mahmoud_jwt_Key"
 }
