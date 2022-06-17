@@ -226,16 +226,16 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
 
   //Validate Response
   const { error } = validate(req.body,'login'); 
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).send({error:error.details[0].message,status:'false'});
 
   //Check If User is found
   let user = await User.findOne({ where:{email: req.body.email} });
-  if (!user) return res.status(400).send('This User Isn\'t Found');
+  if (!user) return res.status(400).send({error:'This User Isn\'t Found',status:'false'});
 
 
   //Compare Between Req.password And User.password in DB
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send('Invalid password.');
+  if (!validPassword) return res.status(400).send({error:'Invalid password.',status:'false'});
 
   //If All Things Is GenToken And Send It 
   
