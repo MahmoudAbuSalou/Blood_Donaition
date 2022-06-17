@@ -43,7 +43,7 @@ const Post = sequelize.define('post', {
 
 function validatePost(post) {
   const schema = Joi.object({
-    
+   
     cityName    : Joi.string().min(3).max(50).required(),
     firstName    : Joi.string().min(3).max(10).required(),
     lastName    : Joi.string().min(3).max(10).required(),
