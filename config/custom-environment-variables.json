@@ -1,4 +1,5 @@
 {
   "jwtPrivateKey": "Blood_jwtPrivateKey",
-  "blackListKey":"Mahmoud_jwt_Key"
+  "blackListKey":"Mahmoud_jwt_Key",
+  "statusOfCron":""
 }

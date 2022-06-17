@@ -38,8 +38,10 @@ function dateComponentPad(value) {
 
   
  module.exports= function(){
-    cron.schedule('1 1 * * *', asyncMiddleWare(async () => {
-      const response =await Post.destroy({
+     
+    cron.schedule('0 */6 * * *', asyncMiddleWare(async () => {
+      
+        await Post.destroy({
          
           where: {
                
@@ -48,10 +50,11 @@ function dateComponentPad(value) {
               
             
   
+            
       });
       
-   
-  console.log('CheckOfPostsIsActivited')
+         console.log('Cron is Running Successfully')
+ 
   
 })
   );
