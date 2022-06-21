@@ -252,12 +252,12 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
 router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
 
   
-  const error=validate(req.body,'updateProfile')
-  console.log(error)
-  if (error) return res.status(400).send(error.details[0].message);
+  const {error}=validate(req.body,'updateProfile')
+
+  if (error) return res.status(400).send({error:error.details[0].message,status:'false'});
   
-  let userProfile=await UserProfile.findOne({where:{user_id:req.user.user_id}});
-  let user=await User.findOne({where:{user_id:req.user.user_id}});
+  let userProfile=await UserProfile.findOne({where:{user_id:req.user.id}});
+  let user=await User.findOne({where:{user_id:req.user.id}});
   if(!userProfile || !user) res.status(400).send({
    'status':"false",
    'message':"This User isn't found",
@@ -274,7 +274,7 @@ router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
    let result2=await user.update({
     name:req.body.name,
     address:req.body.address,
-    email:req.body,email,
+    email:req.body.email,
     phone:req.body.phone,
     
 

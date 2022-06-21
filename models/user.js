@@ -127,14 +127,15 @@ function validateUser(user,type) {
     schema=  Joi.object({
       name    : Joi.string().min(3).max(50).required(),
       email   : Joi.string().required().min(5).max(255).email(),
-      address: Joi.string().min(5).max(255).required(),
+     
+     
       phone: Joi.number().min(10).required(),
-      weight: Joi.number().min(2).required(),
+  
+    
       blood_type    : Joi.string().min(2).max(4).required(),
       gender   : Joi.string().required().min(4).max(255),
-  
+      weight: Joi.number().min(2).required(),
     })
-   
     return schema.validate(user);
   }
   default: {
