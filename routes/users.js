@@ -251,8 +251,11 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
 
 router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
 
+  
   const error=validate(req.body,'updateProfile')
+  console.log(error)
   if (error) return res.status(400).send(error.details[0].message);
+  
   let userProfile=await UserProfile.findOne({where:{user_id:req.user.user_id}});
   let user=await User.findOne({where:{user_id:req.user.user_id}});
   if(!userProfile || !user) res.status(400).send({
@@ -261,14 +264,14 @@ router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
     
   });
   
-  
  
-  let result=userProfile.update({
+ 
+  let result=await userProfile.update({
     weight:req.body.weight,
     blood_type:req.body.blood_type,
     gender:req.body.gender
   })
-   let result2=user.update({
+   let result2=await user.update({
     name:req.body.name,
     address:req.body.address,
     email:req.body,email,
@@ -279,7 +282,9 @@ router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
   
   var data={
     "status":"true",
-    "message":"Profile is Updated successfuly "
+    "message":"Profile is Updated successfuly ",
+    "user":result,
+    "userProfile":result2
   }
   res.status(200).send(data)
 

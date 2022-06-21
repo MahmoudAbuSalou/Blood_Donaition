@@ -129,12 +129,12 @@ function validateUser(user,type) {
       email   : Joi.string().required().min(5).max(255).email(),
       address: Joi.string().min(5).max(255).required(),
       phone: Joi.number().min(10).required(),
-      weight: { type: Sequelize.INTEGER, allowNull:false},
-      gender: { type: Sequelize.STRING, allowNull:false },
-    
-          blood_type: { type: Sequelize.STRING, allowNull:false },
+      weight: Joi.number().min(2).required(),
+      blood_type    : Joi.string().min(2).max(4).required(),
+      gender   : Joi.string().required().min(4).max(255),
   
     })
+   
     return schema.validate(user);
   }
   default: {

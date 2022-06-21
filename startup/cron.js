@@ -39,7 +39,7 @@ function dateComponentPad(value) {
   
  module.exports= function(){
      
-    cron.schedule('0 */12 * * *', asyncMiddleWare(async () => {
+    cron.schedule('1 */12 * * *', asyncMiddleWare(async () => {
       
         await Post.destroy({
          

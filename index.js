@@ -22,6 +22,7 @@ const port = process.env.PORT || 3000;
 	
 // Sync all models that are not
 // already in the database
+
 sequelize.sync({force:false}).then((result) => {
     
     
