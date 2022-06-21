@@ -19,20 +19,19 @@ const router = express.Router();
 
 
 
-function checkFile(filename) {
-    fs.open(filename,'r',function(err, fd){
-      if (err) {
-        fs.writeFile(filename, 'w', function(err) {
-            if(err) {
-                console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-      } else {
-        console.log("The file exists!");
-      }
-    });
-  }
+function formatDate(date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('-');
+}
 
 //getUser+UserProfile
 router.get('/', auth, asyncMiddleWare(
@@ -92,12 +91,19 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
   const { error } = validate(req.body,'signUp'); 
   if (error ) return res.status(400).send({error:error.details[0].message});
 
-
  
     // check if user already exist
     // Validate if user exist in our database
-  let user = await User.findOne({ where:{email: req.body.email} });
-  if (user) return res.status(400).send({error:'User already registered.'});
+  let user = await User.findOne({ where:{email: req.body.email } });
+  if (user) return res.status(200).send({
+    
+    status : 'false',
+    message : 'User already registered.',
+    user : null,
+    userprofile:null,
+    token:null
+  
+  });
 
 
     //Encrypt user password
@@ -122,10 +128,10 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
     phone:req.body.phone,
     address:req.body.address,
     isAdmin:req.body.isAdmin,
-    dateOfLastDonation:new Date()
+    birthDate:req.body.birthDate
+    
 
-
-  })
+  },{transaction})
  
   
   const user_id=UserRes.user_id
@@ -134,18 +140,22 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
    gender:req.body.gender,
    blood_type:req.body.blood_type,
    donation_count:req.body.donation_count,
+   dateOfLastDonation:new Date(),
    user_id:user_id,
 
-  })
+
+  },{transaction})
   
    
     //Gen Token
     
     const token=genToken(UserRes.user_id,UserRes.isAdmin);
+    // var birth=UserRes.birthDate.substring(0, 8)
+    
       //Init Obj to send it AS Response
-      user = _.pick(UserRes, ['user_id','phone','address','name', 'email', 'isAdmin','token']);
+      user = _.pick(UserRes, ['user_id','phone','address','name', 'email', 'isAdmin','birthDate','token']);
       const user_Profile = _.pick(UserHealthProfileRes, ['weight','gender','blood_type','donation_count']);
-  
+    // user.birthDate=birth
   // commit
   await transaction.commit();
        const Obj={

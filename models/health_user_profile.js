@@ -31,7 +31,7 @@ const User = sequelize.define('userHealthProfile', {
     
 
 	
-	weight: { type: Sequelize.INTEGER, allowNull:false },
+	weight: { type: Sequelize.STRING, allowNull:false },
 	
 	gender: { type: Sequelize.STRING, allowNull:false },
 

@@ -51,17 +51,14 @@ const User = sequelize.define('user',
       phone: { type: Sequelize.INTEGER, allowNull:false },
       address: { type: Sequelize.STRING, allowNull:false },
       isAdmin:{type:Sequelize.BOOLEAN,allowNull:false},
+      birthDate:{ type: Sequelize.STRING,allowNull:false },
 
 	// Timestamps
 	createdAt: Sequelize.DATE,
 	updatedAt: Sequelize.DATE,
 },
 {
-  hooks: {
-    beforeCreate() {
-      // Do other stuff
-    }
-  }
+ 
 }
 
 
@@ -100,8 +97,9 @@ function validateUser(user,type) {
     
         isAdmin :Joi.boolean().required(),
         blood_type    : Joi.string().min(2).max(4).required(),
-        gender   : Joi.string().required().min(4).max(255),
-        weight: Joi.number().min(2).required(),
+        gender   : Joi.string().required().min(3).max(255),
+        weight: Joi.string().min(2).required(),
+        birthDate:Joi.string().required(),
       })
       return schema.validate(user);
   }
