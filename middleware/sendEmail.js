@@ -11,6 +11,9 @@ module.exports=async function (email,pin) {
         auth: {
           user: 'bdonation074@gmail.com',
           pass: 'myzdyorkwpbyshbk'
+          //heroko myzdyorkwpbyshbk123456789*
+          //https://blood-donation-mah.herokuapp.com/
+          //https://git.heroku.com/blood-donation-mah.git
         }
       });
      
