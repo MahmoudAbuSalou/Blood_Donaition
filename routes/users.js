@@ -42,9 +42,11 @@ router.get('/', auth, asyncMiddleWare(
     let user = await User.findOne ({where:{user_id:req.user.id}});
     let userHealthProfile = await UserProfile.findOne ({where:{user_id:req.user.id}});
     if(!user || !userHealthProfile)
-    res.send({
+    res.status(200).send({
       status:'false',
-      message:'This User Not Found'
+      message:'This User Not Found',
+      user:null,
+      userprofile:null
     })
      
     user=_.pick(user,['name', 'email', 'isAdmin','address','phone'])
@@ -89,7 +91,13 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
  
   //Check if request isn't validate
   const { error } = validate(req.body,'signUp'); 
-  if (error ) return res.status(400).send({error:error.details[0].message});
+  if (error ) return res.status(200).send({message:error.details[0].message,
+    status : 'false',
+  
+    user : null,
+    userprofile:null,
+    token:null
+  });
 
  
     // check if user already exist
@@ -236,16 +244,25 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
 
   //Validate Response
   const { error } = validate(req.body,'login'); 
-  if (error) return res.status(400).send({error:error.details[0].message,status:'false'});
+  if (error) return res.status(200).send({
+    message:error.details[0].message,
+    status:'false',
+    token:null
+    });
 
   //Check If User is found
   let user = await User.findOne({ where:{email: req.body.email} });
-  if (!user) return res.status(400).send({error:'This User Isn\'t Found',status:'false'});
+  if (!user) return res.status(200).send({
+    message:'This User Isn\'t Found',
+    status:'false',
+    token:null
+  
+  });
 
 
   //Compare Between Req.password And User.password in DB
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send({error:'Invalid password.',status:'false'});
+  if (!validPassword) return res.status(200).send({message:'Invalid password.',status:'false',token:null});
 
   //If All Things Is GenToken And Send It 
   
@@ -264,13 +281,20 @@ router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
   
   const {error}=validate(req.body,'updateProfile')
 
-  if (error) return res.status(400).send({error:error.details[0].message,status:'false'});
+  if (error) return res.status(200).send({
+    message:error.details[0].message,
+    status:'false',
+      "user":null,
+  "userProfile":null
+});
   
   let userProfile=await UserProfile.findOne({where:{user_id:req.user.id}});
   let user=await User.findOne({where:{user_id:req.user.id}});
-  if(!userProfile || !user) res.status(400).send({
+  if(!userProfile || !user) res.status(200).send({
    'status':"false",
    'message':"This User isn't found",
+   "user":null,
+   "userProfile":null
     
   });
   
@@ -332,7 +356,7 @@ router.get('/listUser', auth, asyncMiddleWare(
     Result.forEach(element => {
 
      
-      var temp=((element.dataValues.donation_count * 3)/(5))
+      var temp=((element.dataValues.donation_count * avg)/(5))
       
       element.dataValues.rating=temp;
      
@@ -370,7 +394,14 @@ router.get('/listUser', auth, asyncMiddleWare(
     let userProfile=await UserProfile.findOne({
       where: {user_id: req.user.id},
     })
-  
+    
+    if(!user ){
+      res.status(200).send({
+        status:'false',
+        message:'this user is not found',
+        data:user
+       })
+    }
     
     // get transaction
     transaction = await sequelize.transaction();
@@ -392,6 +423,7 @@ router.get('/listUser', auth, asyncMiddleWare(
     await transaction.commit();
      res.send({
       status:'true',
+      message:'this user is deleted',
       data:user
      })
     
