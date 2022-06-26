@@ -136,7 +136,8 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
     phone:req.body.phone,
     address:req.body.address,
     isAdmin:req.body.isAdmin,
-    birthDate:req.body.birthDate
+    birthDate:req.body.birthDate,
+   
     
 
   },{transaction})
@@ -197,6 +198,73 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
  
 }));
 
+router.post('/checkEmail',asyncMiddleWare( async (req, res) => {
+
+
+    
+  
+  try {
+ 
+  //Check if request isn't validate
+  const { error } = validate(req.body,'signUp'); 
+  if (error ) return res.status(200).send(
+       {
+    message:error.details[0].message,
+    status : 'false',
+      });
+
+ 
+    // check if user already exist
+    // Validate if user exist in our database
+  let user = await User.findOne({ where:{email: req.body.email } });
+  if (user) return res.status(200).send({
+    
+    status : 'false',
+    message : 'User already registered.',
+    
+  });
+
+
+  
+     
+
+
+  
+    
+  
+  
+   
+       const Obj={
+        status : 'true',
+        message : 'all Thing is Right',
+       
+    
+      }
+  
+  
+       res.status(200).send(Obj);
+     
+    
+     
+    
+   
+   } catch (error) {
+    res.status(404).send(
+      {
+   message:error.details[0].message,
+   status : 'false',
+     });
+
+   }
+
+ 
+
+
+  
+ 
+   
+ 
+}));
 
 //Change password
 router.post('/chgPassword',asyncMiddleWare(async(req,res)=>{
@@ -449,4 +517,6 @@ console.log(req.user.id)
 
     
   } ))
+
+ 
  module.exports = router; 

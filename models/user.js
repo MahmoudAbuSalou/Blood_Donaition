@@ -51,6 +51,7 @@ const User = sequelize.define('user',
       phone: { type: Sequelize.INTEGER, allowNull:false },
       address: { type: Sequelize.STRING, allowNull:false },
       isAdmin:{type:Sequelize.BOOLEAN,allowNull:false},
+   
      
       birthDate:{ type: Sequelize.STRING,allowNull:false },
 
