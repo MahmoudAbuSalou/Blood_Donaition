@@ -86,8 +86,8 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
 
 
     
- 
   
+
  
   //Check if request isn't validate
   const { error } = validate(req.body,'signUp'); 
@@ -199,12 +199,12 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
 
 
 //Change password
-router.post('/chgPassword',auth,asyncMiddleWare(async(req,res)=>{
+router.post('/chgPassword',asyncMiddleWare(async(req,res)=>{
 
   //Validate Response
   const { error } = validate(req.body,'chgPassword'); 
   if (error) return res.status(400).send(error.details[0].message);
-  let user = await User.findOne ({where:{user_id:req.user.id}});
+  let user = await User.findOne({ where:{email: req.body.email } });
   
 
   if(!user)
@@ -245,17 +245,24 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
   //Validate Response
   const { error } = validate(req.body,'login'); 
   if (error) return res.status(200).send({
-    message:error.details[0].message,
-    status:'false',
+    status : 'false',
+    message : error.details[0].message,
+    user : null,
+    userprofile:null,
     token:null
     });
 
   //Check If User is found
   let user = await User.findOne({ where:{email: req.body.email} });
+  console.log(user)
+  
+    let userHealthProfile = await UserProfile.findOne ({where:{user_id:user.user_id}});
   if (!user) return res.status(200).send({
     message:'This User Isn\'t Found',
     status:'false',
-    token:null
+    token:null,
+    user : null,
+    userprofile:null,
   
   });
 
@@ -270,9 +277,11 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
   
   
   res.status(200).send({
-    status:true,
+    status:"true",
     message:"Login Success",
-    token:token
+    token:token,
+    user : user,
+    userprofile:userHealthProfile,
   });
 }));
 
@@ -386,7 +395,7 @@ router.get('/listUser', auth, asyncMiddleWare(
     const sequelize=require('../startup/db')
    let transaction;
      
-
+console.log(req.user.id)
    try {
     let user=await User.findOne({
       where: {user_id: req.user.id},
