@@ -7,7 +7,7 @@ const {Post_Donate,} = require('../../models/post_donate');
 const {BloodDonors,} = require('../../models/blood_donors');
 const express = require('express');
 const router = express.Router();
-
+const addPostToArchive=require('../../services/addPostToArchive')
 
 router.post('/:id', auth, asyncMiddleWare(async (req, res) => {
 
@@ -27,7 +27,7 @@ router.post('/:id', auth, asyncMiddleWare(async (req, res) => {
                      await Post.increment( {bloodBagsCollect:1},{where: { post_id: response1.post_id}});
                      await Post_Donate.create({ status:1,postPostId:response1.post_id,bloodDonorDonateId:response1.donate_id,user_id:response1.user_id});  
                   //  const response3 = await BloodDonors.destroy({ where: {donate_id:response1.donate_id}});
-       
+                   addPostToArchive(response1.post_id,response2.user_id,response1.user_id)
 
                   res.status(200).send({
                     status: 'true',

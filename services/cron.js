@@ -43,23 +43,13 @@ function dateComponentPad(value) {
           expiryDate: {[Op.lt]: formatDate(new Date())},}
       })
 
-      //DeletePosts
-       await Post.destroy({
-         
-          where: {
-               
-            expiryDate: {[Op.lt]: formatDate(new Date())},}
-               
-              
-            
-  
-            
-      });
+     
     post.forEach(element => {
-      addPostToArchive(element.post_id,element.user_id,null)
+    
+     addPostToArchive(element.post_id,element.user_id,null)
     });
    
-      
+     
       
          console.log('Cron is Running Successfully')
  

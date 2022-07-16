@@ -20,52 +20,58 @@ module.exports= async function(idPost,idUser1,idUser2){
               post_id:idPost}
           })
           if(postAr!=null){
-            await Post_Archive.destroy({ where: { post_id:req.params.id,user_id:req.user.id}});
+            await Post_Archive.destroy({ where: { post_id:idPost}});
           }
 
 
          
           //AddPostToArchive
-          let post= await Post.findOne({
-       
-            where: {
-                   
-              post_id:idPost}
-          })
-          let  postUp = new Post(_.pick(post, [ 'bloodBags', 'cityName','hospitalName','gender','postType','bloodType','bloodBagsCollect']));
-             if(postUp.bloodBags==postUp.bloodBagsCollect  && idUser2!=null)
+         const post= await Post.findOne({ where: { post_id:idPost} });
+        
+          
+      //    let  postUp = new Post(_.pick(post, [ 'bloodBags', 'cityName','hospitalName','gender','postType','bloodType','bloodBagsCollect']));
+      var state=false;      
+      if(post.bloodBags==post.bloodBagsCollect  && idUser2!=null)
              {
-              await Post.destroy({ where: { post_id:req.params.id,user_id:req.user.id}});
+              await Post.destroy({ where: { post_id:idPost}});
+              state=true;
              }
           const response = await Post_Archive.create({
          
             
-            post_id:postUp.post_id,
-            user_id: postUp.user.id,
-            bloodBags:postUp.bloodBags,
-            bloodBagsCollect:postUp.bloodBagsCollect,
-            cityName:postUp.cityName,
-            hospitalName:postUp.hospitalName,
-            gender:postUp.gender,
-            postType:postUp.postType,
-            bloodType:postUp.bloodType,
+            post_id:post.post_id,
+            user_id: post.user_id,
+            bloodBags:post.bloodBags,
+            bloodBagsCollect:post.bloodBagsCollect,
+            cityName:post.cityName,
+            hospitalName:post.hospitalName,
+            gender:post.gender,
+            postType:post.postType,
+            bloodType:post.bloodType,
            
+            state:state
            
           });
 
+
+
+
+
           // المتبرع له
-        let user1 = await User_Donate.findOne ({where:{user_id:idUser1}});
+        let user1 = await User_Donate.findOne ({where:{Donate_id:idUser1}});
+        console.log('-----------------------------------------------------------------------------------')
+        
         if(user1 ==null){
         
-    
-         
-          let userHealthProfile1 = await UserProfile.findOne ({where:{user_id:idUser1}});
+       const   user11 = await User.findOne ({where:{user_id:idUser1}});
+          console.log(user11)
+          const userHealthProfile1 = await UserProfile.findOne ({where:{user_id:idUser1}});
           await User_Donate.create(
          {
-          Donate_id:user1.user_id,
-          birthDate:user1.birthDate,
+          Donate_id:user11.user_id,
+          birthDate:user11.birthDate,
           gender:userHealthProfile1.gender,
-          address:user1.address
+          address:user11.address
          } );
 
         }
@@ -73,9 +79,12 @@ module.exports= async function(idPost,idUser1,idUser2){
 
 
         //المتبرع
-        let user2 = await User.findOne ({where:{user_id:idUser2}});
-        let userHealthProfile2 = await UserProfile.findOne ({where:{user_id:idUser2}});
+      
         if(idUser2!=null){
+          let user2 = await User.findOne ({where:{user_id:idUser2}});
+          console.log('-----------------------------------------------------------------------------------')
+          console.log(user2)
+          let userHealthProfile2 = await UserProfile.findOne ({where:{user_id:idUser2}});
           await User_Donor.create({
             Donate_id:user2.user_id,
             birthDate:user2.birthDate,
@@ -83,6 +92,22 @@ module.exports= async function(idPost,idUser1,idUser2){
             address:user2.address,
             post_id:idPost
           });
+        }
+
+          //DeletePosts
+        if(idUser2==null){
+            //DeletePosts
+       await Post.destroy({
+         
+        where: {
+             
+          post_id:idPost}
+             
+            
+          
+
+          
+    });
         }
 
 }
