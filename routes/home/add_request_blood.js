@@ -29,15 +29,6 @@ if (error) return res.status(400).send({
 
 
 
-// const {
-//   err
-// } = validatePosition(req.body);
-// if (err) return res.status(400).send({
-//   status:false,
-//   message: err.details[0].message,
-//   data:null
-// });
-
    /// Get Value From Request Body Using Method Pick in  Lodash Package 
    let  post = new Post(_.pick(req.body, ['firstName', 'lastName', 'bloodBags', 'cityName','hospitalName','gender','postType','bloodType','bloodOwner','phone','bloodBagsCollect','expiryDate']));
    let position = new bloodPosition(_.pick(req.body,['position_Lat','position_Lang']));
@@ -77,6 +68,7 @@ dataPosition:responsePosition
 }
 catch(error){
  // Rollback transaction only if the transaction object is defined
+ console.log(error);
  console.log("error add request")
  if (transaction) await transaction.rollback();
 }

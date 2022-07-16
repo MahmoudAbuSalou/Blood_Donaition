@@ -56,6 +56,9 @@ function validatePost(post) {
     bloodType: Joi.string().min(2).max(10).required(),
     phone: Joi.number().min(10).required(),
     expiryDate :Joi.date().required(),
+    position_Lat: Joi.required(),
+    position_Lang: Joi.required(),
+
 });
 return schema.validate(post);
 }

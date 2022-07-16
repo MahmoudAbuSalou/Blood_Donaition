@@ -18,6 +18,12 @@ const BloodDonors = sequelize.define('blood_donors', {
 
 		primaryKey:true
 	},
+	post_id:{
+
+		type:Sequelize.INTEGER,
+
+		allowNull:false,
+	},
 
       acceptance_rate: { type: Sequelize.INTEGER, allowNull:false },
 
@@ -29,7 +35,8 @@ const BloodDonors = sequelize.define('blood_donors', {
 function validateBloodDonations(donation) {
   const schema = Joi.object({
    
-    acceptance_rate: Joi.number().min(10).max(10).required(),
+    acceptance_rate: Joi.number().min(0).max(100).required(),
+	post_id : Joi.number().required(),
    
 });
 return schema.validate(donation);
