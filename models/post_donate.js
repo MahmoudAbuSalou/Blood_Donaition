@@ -18,7 +18,7 @@ const Post_Donate = sequelize.define('post_donate', {
 
 		primaryKey:true
 	},
-
+	user_id:{type: Sequelize.INTEGER, allowNull:false },
       status: { type: Sequelize.BOOLEAN, allowNull:false },
 
 	createdAt: Sequelize.DATE,

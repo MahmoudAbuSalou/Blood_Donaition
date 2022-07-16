@@ -137,9 +137,7 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
     address:req.body.address,
     isAdmin:req.body.isAdmin,
     birthDate:req.body.birthDate,
-   
-    
-
+  
   },{transaction})
  
   
@@ -148,7 +146,7 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
    weight:req.body.weight,
    gender:req.body.gender,
    blood_type:req.body.blood_type,
-   donation_count:req.body.donation_count,
+   donation_count:0,
    dateOfLastDonation:new Date(),
    user_id:user_id,
 

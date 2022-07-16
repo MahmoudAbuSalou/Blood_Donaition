@@ -6,6 +6,11 @@ const SinglePost = require('../routes/home/getSinglePost');
 const deletePost = require('../routes/home/delete_post');
 const updatePost = require('../routes/home/update_post');
 const Search = require('../routes/search');
+const acceptanceRate = require('../routes/Donation/acceptance_rate');
+const userPosts = require('../routes/Donation/user_posts');
+const deleteDonors = require('../routes/Donation/delete');
+const ConfirmDonors = require('../routes/Donation/confirm');
+const getDonors = require('../routes/Donation/getDonors');
 
 const users = require('../routes/users');
 const donaite = require('../routes/donaite');
@@ -21,6 +26,11 @@ module.exports = function(app) {
   app.use('/api/home/deletePost', deletePost);
   app.use('/api/home/updatePost', updatePost);
   app.use('/api/search', Search);
+  app.use('/api/Donation/acceptance_rate',acceptanceRate);
+  app.use('/api/Donation/user_posts',userPosts);
+  app.use('/api/Donation/getDonors',getDonors);
+  app.use('/api/Donation/delete',deleteDonors);
+  app.use('/api/Donation/confirm',ConfirmDonors);
   app.use('/api/users', users);
   app.use('/api/donaite',donaite)
   app.use('/api/genPin',genPin)

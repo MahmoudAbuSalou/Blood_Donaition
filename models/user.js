@@ -9,6 +9,7 @@ const userProfile=require('./health_user_profile')
 
 const {Post}=require('./post');
 const {BloodDonors}=require('./blood_donors');
+const {Post_Donate}=require('./post_donate');
 const {UserProfile}=require('./health_user_profile');
 // Import sequelize object,
 // Database connection pool managed by Sequelize.
@@ -165,6 +166,7 @@ User.hasMany(Post, {
  Post.belongsTo(User,{
   foreignKey: 'user_id',
  });
+
 //-------------------------------------------------------------
 // one to many between BloodDonors and user  
 User.hasMany(BloodDonors, {
@@ -172,6 +174,15 @@ User.hasMany(BloodDonors, {
   
 });
  BloodDonors.belongsTo(User,{
+  foreignKey: 'user_id',
+ });
+
+
+ User.hasMany(Post_Donate, {
+  foreignKey: 'user_id'
+ 
+});
+Post_Donate.belongsTo(User,{
   foreignKey: 'user_id',
  });
 //---------------------------------------------------------------
