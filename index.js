@@ -1,7 +1,7 @@
 
 const express = require('express');
 const app = express();
-require('./startup/cron')()
+require('./services/cron')()
 
 require('./startup/routes')(app);
 const sequelize=require('./startup/db');

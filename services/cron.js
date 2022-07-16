@@ -1,22 +1,13 @@
-  /*
-
-  * * * * * *
-  | | | | | |
-  | | | | | day of week
-  | | | | month
-  | | | day of month
-  | | hour
-  | minute
-  second ( optional )
 
 
-  */
-
-  const  asyncMiddleWare     = require('..//middleware/async');
+  const  asyncMiddleWare     = require('../middleware/async');
   const {Post,validate} = require('../models/post');
   const User=require('../models/user')
- 
-  
+  const {Post_Archive}=require('../models/Archive/post_archive');
+  const {User_Donor}=require('../models/Archive/blood_donors_archive');
+  const {User_Donate}=require('../models/Archive/donate_archive');
+  const addPostToArchive=require('./addPostToArchive')
+  const {BloodDonors}=require('../models/blood_donors')
   const Sequelize = require('sequelize');
   const Op = Sequelize.Op;
   
@@ -37,12 +28,23 @@ function dateComponentPad(value) {
   }
 
 
-  
+  // '0 */12 * * *'
  module.exports= function(){
      
-    cron.schedule('0 */12 * * *', asyncMiddleWare(async () => {
+    cron.schedule('* * * * *', asyncMiddleWare(async () => {
       
-        await Post.destroy({
+
+
+      //FetchPosts
+     let post= await Post.findAll({
+      include:BloodDonors  ,
+        where: {
+               
+          expiryDate: {[Op.lt]: formatDate(new Date())},}
+      })
+
+      //DeletePosts
+       await Post.destroy({
          
           where: {
                
@@ -53,7 +55,11 @@ function dateComponentPad(value) {
   
             
       });
+    post.forEach(element => {
+      addPostToArchive(element.post_id,element.user_id,null)
+    });
    
+      
       
          console.log('Cron is Running Successfully')
  

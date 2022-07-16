@@ -35,7 +35,7 @@ const Post = sequelize.define('post', {
   bloodOwner: { type: Sequelize.STRING, allowNull:false },
   phone: { type: Sequelize.INTEGER, allowNull:false },
   expiryDate: { type: Sequelize.DATE, allowNull:false },
-
+  
 	createdAt: Sequelize.DATE,
 	updatedAt: Sequelize.DATE,
 })

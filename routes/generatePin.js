@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const sendEmail=require('../middleware/sendEmail')
+const sendEmail=require('../services/sendEmail')
 const asyncMiddleWare=require('../middleware/async')
 function generateRandomNumber() {
     var minm = 100000;
