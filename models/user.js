@@ -52,7 +52,7 @@ const User = sequelize.define('user',
       phone: { type: Sequelize.INTEGER, allowNull:false },
       address: { type: Sequelize.STRING, allowNull:false },
       isAdmin:{type:Sequelize.BOOLEAN,allowNull:false},
-   
+      tokenPh: { type: Sequelize.STRING, allowNull:false },
      
       birthDate:{ type: Sequelize.STRING,allowNull:false },
 
@@ -97,7 +97,7 @@ function validateUser(user,type) {
         password: Joi.string().min(5).max(255).required(),
         address: Joi.string().min(5).max(255).required(),
         phone: Joi.number().min(10).required(),
-    
+        tokenPh:Joi.string().required(),
         isAdmin :Joi.boolean().required(),
         blood_type    : Joi.string().min(2).max(4).required(),
         gender   : Joi.string().required().min(3).max(255),
@@ -111,6 +111,7 @@ function validateUser(user,type) {
       schema= Joi.object({
         email   : Joi.string().required().min(5).max(255).email(),
         password: Joi.string().min(5).max(255).required(),
+        tokenPh:Joi.string().required()
       
       })
       return schema.validate(user);

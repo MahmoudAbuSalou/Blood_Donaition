@@ -7,13 +7,15 @@ const {BloodDonors,validate} = require('../../models/blood_donors');
 const {User} = require('../../models/user');
 const express = require('express');
 const router = express.Router();
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 
 router.get('/:id',auth,asyncMiddleWare(async (req, res) => {
 
 
     const response =await BloodDonors.findAll({
-        where: {post_id: req.params.id,},
+        where: {[Op.and]:[{post_id: req.params.id,},{statusRequest:1}]},
         include: User ,// Join Table Post With Table User
         order: [
             ['createdAt', 'DESC'] //  order By Date  To Get The Latest Post
