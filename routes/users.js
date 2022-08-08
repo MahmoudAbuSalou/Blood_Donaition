@@ -62,7 +62,34 @@ router.get('/', auth, asyncMiddleWare(
   
 ));
 
+//getTokenPhone
+router.get('/getTokenPhone/:id', asyncMiddleWare(
+  async (req, res) => {
+      
 
+     console.log(req.params.id)
+    let user = await User.findOne ({where:{user_id:req.params.id}});
+   
+    if(!user )
+    res.status(200).send({
+      status:'false',
+      message:'This User Not Found',
+      user:null,
+      userprofile:null
+    })
+     
+    user=_.pick(user,['tokenPh'])
+  
+    const response={
+      message:"All Thing Is right",
+      status:"true",
+      tokenPh:user.tokenPh,
+    
+    }
+    res.status(200).send(response);
+  }
+  
+));
 //Logout And Store Token in BlackList (File) 
 router.get('/logout',auth,asyncMiddleWare(
   async (req, res) => {
@@ -137,6 +164,7 @@ router.post('/signUp',asyncMiddleWare( async (req, res) => {
     address:req.body.address,
     isAdmin:req.body.isAdmin,
     birthDate:req.body.birthDate,
+    tokenPh:req.body.tokenPh,
   
   },{transaction})
  
@@ -323,6 +351,10 @@ router.post('/login',asyncMiddleWare( async (req, res) => {
   console.log(user)
   
     let userHealthProfile = await UserProfile.findOne ({where:{user_id:user.user_id}});
+    let result=await user.update({
+      tokenPh:req.body.tokenPh
+      
+    })
   if (!user) return res.status(200).send({
     message:'This User Isn\'t Found',
     status:'false',
