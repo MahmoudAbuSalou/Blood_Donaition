@@ -86,7 +86,7 @@ module.exports= async function(idPost,idUser1,idUser2){
           console.log(user2)
           let userHealthProfile2 = await UserProfile.findOne ({where:{user_id:idUser2}});
           await User_Donor.create({
-            Donate_id:user2.user_id,
+            Donor_id:user2.user_id,
             birthDate:user2.birthDate,
             gender:userHealthProfile2.gender,
             address:user2.address,

@@ -15,6 +15,9 @@ const getDonors = require('../routes/Donation/getDonors');
 const users = require('../routes/users');
 const donaite = require('../routes/donaite');
 const genPin=require('../routes/generatePin')
+const ratioDonate=require('../routes/dashBoard/GenderRatio')
+const ratioAge=require('../routes/dashBoard/AgeRatio')
+const ratioBloodGroup=require('../routes/dashBoard/bloodGroupsRatio')
 const error = require('../middleware/error');
 
 module.exports = function(app) {
@@ -34,6 +37,9 @@ module.exports = function(app) {
   app.use('/api/users', users);
   app.use('/api/donaite',donaite)
   app.use('/api/genPin',genPin)
- 
+  //المتبرع له + المتبرع
+  app.use('/api/GenderRatio/',ratioDonate)
+  app.use('/api/AgeRatio/',ratioAge)
+  app.use('/api/BloodGroupsRatio/',ratioBloodGroup)
   app.use(error);
 }
