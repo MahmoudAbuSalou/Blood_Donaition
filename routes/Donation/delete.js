@@ -10,6 +10,8 @@ const {
     validate
 } = require('../../models/blood_donors');
 const express = require('express');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 const router = express.Router();
 
 // This Route For Add Post By User
@@ -24,10 +26,15 @@ router.post('/:id', auth, asyncMiddleWare(async (req, res) => {
         // transaction = await sequelize.transaction();
 
         // get Donors 
-
-             const response1 = await BloodDonors.findOne({where: { donate_id: req.params.id}});
+       
+             const response1 = await BloodDonors.findOne({where: {[Op.and]:[{donate_id: req.params.id},{statusRequest:1}] }});
              const response2 = await Post_Donate.create({ status:0,postPostId:response1.post_id,bloodDonorDonateId:response1.donate_id,user_id:response1.user_id});
-            //  const response3 = await BloodDonors.destroy({ where: {donate_id:response1.donate_id}});
+             const response3 = await BloodDonors.update({statusRequest:0},{ where: {donate_id:req.params.id}});
+   
+            
+          
+          
+              
 
 
         // await transaction.commit();

@@ -8,7 +8,11 @@ const {User_Donate}=require('../models/Archive/donate_archive')
 //المتبرع
 const {User_Donor}=require('../models/Archive/blood_donors_archive')
 module.exports= async function(idPost,idUser1,idUser2){
-
+  console.log("ppppppppppppppppppppppppppppppppppppppppppppppppp");
+    console.log(idPost)
+    console.log(idUser1)
+    console.log(idUser2)
+    console.log("ppppppppppppppppppppppppppppppppppppppppppppppppp");
     // posts.forEach(element => {
     //     console.log(element.dataValues)
     // });
@@ -30,8 +34,9 @@ module.exports= async function(idPost,idUser1,idUser2){
         
           
       //    let  postUp = new Post(_.pick(post, [ 'bloodBags', 'cityName','hospitalName','gender','postType','bloodType','bloodBagsCollect']));
-      var state=false;      
-      if(post.bloodBags==post.bloodBagsCollect  && idUser2!=null)
+      var state=false;   
+      if(parseInt(post.bloodBags)===post.bloodBagsCollect && idUser2!=null)   
+    
              {
               await Post.destroy({ where: { post_id:idPost}});
               state=true;
@@ -81,12 +86,15 @@ module.exports= async function(idPost,idUser1,idUser2){
         //المتبرع
       
         if(idUser2!=null){
+          console.log("--------------1----------")
+          console.log(idUser2);
           let user2 = await User.findOne ({where:{user_id:idUser2}});
-          console.log('-----------------------------------------------------------------------------------')
+          console.log('--------------2---------------------------------------------------------------------')
           console.log(user2)
+          console.log('--------------3---------------------------------------------------------------------')
           let userHealthProfile2 = await UserProfile.findOne ({where:{user_id:idUser2}});
           await User_Donor.create({
-            Donate_id:user2.user_id,
+            Donor_id:user2.user_id,
             birthDate:user2.birthDate,
             gender:userHealthProfile2.gender,
             address:user2.address,

@@ -26,6 +26,7 @@ const BloodDonors = sequelize.define('blood_donors', {
 	},
 
       acceptance_rate: { type: Sequelize.INTEGER, allowNull:false },
+	  statusRequest: { type: Sequelize.BOOLEAN, allowNull:false },
 
 	createdAt: Sequelize.DATE,
 	updatedAt: Sequelize.DATE,

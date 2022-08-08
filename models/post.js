@@ -48,7 +48,7 @@ function validatePost(post) {
     firstName    : Joi.string().min(3).max(10).required(),
     lastName    : Joi.string().min(3).max(10).required(),
     bloodBags    : Joi.number().min(1).max(20).required(),
-    bloodBagsCollect   : Joi.number().min(1).max(20).required(),
+    bloodBagsCollect   : Joi.number().min(0).max(20).required(),
     bloodOwner    : Joi.string().min(2).max(10).required(),
     gender    : Joi.string().min(3).max(10).required(),
     hospitalName   : Joi.string().required().min(3).max(255),

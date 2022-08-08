@@ -24,6 +24,7 @@ const port = process.env.PORT || 3000;
 // already in the database
  
 sequelize.sync({force:false}).then((result) => {
+
     
   
     

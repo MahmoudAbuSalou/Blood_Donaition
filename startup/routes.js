@@ -11,6 +11,10 @@ const userPosts = require('../routes/Donation/user_posts');
 const deleteDonors = require('../routes/Donation/delete');
 const ConfirmDonors = require('../routes/Donation/confirm');
 const getDonors = require('../routes/Donation/getDonors');
+const getLocations = require('../routes/dashBord/get_All_Location');
+const getPercent_Post = require('../routes/dashBord/post_complete');
+const Donation_in_cites = require('../routes/dashBord/Donation_in_cities');
+const Donors_in_cites = require('../routes/dashBord/Donors_in_Cites');
 
 const users = require('../routes/users');
 const donaite = require('../routes/donaite');
@@ -31,6 +35,10 @@ module.exports = function(app) {
   app.use('/api/Donation/getDonors',getDonors);
   app.use('/api/Donation/delete',deleteDonors);
   app.use('/api/Donation/confirm',ConfirmDonors);
+  app.use('/api/dashBord/get_All_Location',getLocations);
+  app.use('/api/dashBord/post_complete',getPercent_Post);
+  app.use('/api/dashBord/DonitionInCites',Donation_in_cites);
+  app.use('/api/dashBord/DonorsInCites',Donors_in_cites);
   app.use('/api/users', users);
   app.use('/api/donaite',donaite)
   app.use('/api/genPin',genPin)
