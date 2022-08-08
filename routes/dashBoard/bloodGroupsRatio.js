@@ -37,7 +37,7 @@ router.get('/',asyncMiddleWare(async(req,res)=>{
       "B-":(B2/Posts)*100,
       "AB-":(AB2/Posts)*100,
       "O-":(O2/Posts)*100,
-      "Blama":(Blasma/Posts)*100
+      "Blasma":(Blasma/Posts)*100
     }
    
   
