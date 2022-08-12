@@ -424,8 +424,8 @@ router.post('/updateProfile',auth,asyncMiddleWare(async (req,res)=>{
   var data={
     "status":"true",
     "message":"Profile is Updated successfuly ",
-    "user":result,
-    "userProfile":result2
+    "user":result2,
+    "userProfile":result
   }
   res.status(200).send(data)
 
