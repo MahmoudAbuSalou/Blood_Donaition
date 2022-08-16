@@ -19,7 +19,10 @@ router.get('/Donate',asyncMiddleWare(async(req,res)=>{
    const ratioMale=user.length/(user.length+user1.length)
    const ratioFamale=user1.length/(user.length+user1.length)
   
-
+   if(user.length==0 && user1.length==0){
+    ratioMale=0
+    ratioFamale=0
+  }
     
     var data={
       "status":"true",
@@ -44,12 +47,15 @@ router.get('/Donate',asyncMiddleWare(async(req,res)=>{
   
    
   
-     
-   const ratioMale=user.length/(user.length+user1.length)
-   const ratioFamale=user1.length/(user.length+user1.length)
+   var ratioMale=user.length/(user.length+user1.length)
+   var ratioFamale=user1.length/(user.length+user1.length)
   
-  
+   
 
+    if(user.length==0 && user1.length==0){
+      ratioMale=0
+      ratioFamale=0
+    }
     
     var data={
       "status":"true",

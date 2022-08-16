@@ -60,16 +60,22 @@ router.get('/Donate',asyncMiddleWare(async(req,res)=>{
    
   
 
-    
-    var data={
-      "status":"true",
-      "youths":(youths/user.length)*100,
-      "elderly":(elderly/user.length)*100
+    if(user.length!=0){
+      var data={
+        "status":"true",
+        "youths":(youths/user.length)*100,
+        "elderly":(elderly/user.length)*100
+      }
+      res.status(200).send(data)
     }
-   
-  
-    res.status(200).send(data)
-  
+      else{
+        var data={
+          "status":"true",
+          "youths":0,
+          "elderly":0
+        }
+        res.status(200).send(data)
+      }
   
   
   
@@ -97,16 +103,25 @@ router.get('/Donate',asyncMiddleWare(async(req,res)=>{
      
    
   
-
-    
+    if(user.length!=0){
     var data={
       "status":"true",
       "youths":(youths/user.length)*100,
       "elderly":(elderly/user.length)*100
     }
+    res.status(200).send(data)
+  }
+    else{
+      var data={
+        "status":"true",
+        "youths":0,
+        "elderly":0
+      }
+      res.status(200).send(data)
+    }
    
   
-    res.status(200).send(data)
+   
   
   
   
