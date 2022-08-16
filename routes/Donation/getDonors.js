@@ -3,11 +3,13 @@ const _ = require('lodash');
 
 const  asyncMiddleWare     = require('../../middleware/async');
 const auth = require('../../middleware/auth');
+const {Post} = require('../../models/post');
 const {BloodDonors,validate} = require('../../models/blood_donors');
 const {User} = require('../../models/user');
 const express = require('express');
 const router = express.Router();
 const Sequelize = require('sequelize');
+const { where } = require('sequelize');
 const Op = Sequelize.Op;
 
 
@@ -21,6 +23,8 @@ router.get('/:id',auth,asyncMiddleWare(async (req, res) => {
             ['createdAt', 'DESC'] //  order By Date  To Get The Latest Post
         ]
     });
+    const responsePost = await Post.findOne({ where: { post_id:req.params.id} });
+    
 
     if (response === null) {
         res.status(404).send({
@@ -29,10 +33,13 @@ router.get('/:id',auth,asyncMiddleWare(async (req, res) => {
             data:null
         });
     } else {
+     
         res.status(200).send({
             status:'true',
             message:'get User Donors Successfully..',
-            data:response
+            data:response,
+            phone:responsePost.phone
+
         });
     }
  
