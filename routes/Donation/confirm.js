@@ -25,7 +25,12 @@ router.post('/:id', auth, asyncMiddleWare(async (req, res) => {
                 });
             }
                 else{
+                    var today = new Date();
+                     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+
                     await UserProfile.increment( {donation_count:1},{where: { user_id: response1.user_id}});
+                    await UserProfile.update({dateOfLastDonation:date},{ where: {user_id:response1.user_id}})
                      await Post.increment( {bloodBagsCollect:1},{where: { post_id: response1.post_id}});
                      await Post_Donate.create({ status:1,postPostId:response1.post_id,bloodDonorDonateId:response1.donate_id,user_id:response1.user_id});  
                      const response3 = await BloodDonors.update({statusRequest:0},{ where: {donate_id:req.params.id}});

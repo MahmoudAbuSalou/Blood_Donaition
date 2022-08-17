@@ -7,7 +7,7 @@ const Op = Sequelize.Op;
 const router = express.Router();
 
 
-router.get('/',asyncMiddleWare(async (req, res) => {
+router.post('/',asyncMiddleWare(async (req, res) => {
     const response =await Post.findAll({
         include: User,
         where: {
