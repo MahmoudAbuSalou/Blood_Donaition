@@ -50,7 +50,7 @@ router.get('/', auth, asyncMiddleWare(
     })
      
     user=_.pick(user,['name', 'email', 'isAdmin','address','phone'])
-    userHealthProfile=_.pick(userHealthProfile, ['weight', 'gender', 'blood_type','donation_count'])
+    userHealthProfile=_.pick(userHealthProfile, ['weight', 'gender', 'blood_type','donation_count','dateOfLastDonation'])
     const response={
       message:"All Thing Is right",
       status:"true",
