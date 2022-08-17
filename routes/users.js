@@ -63,7 +63,7 @@ router.get('/', auth, asyncMiddleWare(
 ));
 
 //getTokenPhone
-router.get('/getTokenPhone/:id', asyncMiddleWare(
+router.get('/getTokenPh/:id', asyncMiddleWare(
   async (req, res) => {
       
 
@@ -84,6 +84,34 @@ router.get('/getTokenPhone/:id', asyncMiddleWare(
       message:"All Thing Is right",
       status:"true",
       tokenPh:user.tokenPh,
+    
+    }
+    res.status(200).send(response);
+  }
+  
+));
+//getTokenPhone
+router.get('/getAllTokenPh', asyncMiddleWare(
+  async (req, res) => {
+      
+
+     console.log(req.params.id)
+    let user = await User.findAll ();
+   
+    if(!user )
+    res.status(200).send({
+      status:'false',
+      message:'This User Not Found',
+      user:null,
+      userprofile:null
+    })
+     
+   // user=_.pick(user,['tokenPh'])
+  
+    const response={
+      message:"All Thing Is right",
+      status:"true",
+      users:user,
     
     }
     res.status(200).send(response);
